@@ -14,7 +14,7 @@
     "jwks",
     "authentication"
   ],
-  "author": "Your Name",
+  "author": "Abiral",
   "license": "ISC",
   "dependencies": {
     "express": "^4.19.2",
