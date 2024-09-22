@@ -1,0 +1,36 @@
+{
+  "name": "project1_javascript",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "A project demonstrating JWT handling and JWKS using Express, JWT, and Node-Jose",
+  "main": "server.js",
+  "scripts": {
+    "test": "nyc mocha"
+  },
+  "keywords": [
+    "express",
+    "jwt",
+    "jose",
+    "jwks",
+    "authentication"
+  ],
+  "author": "Your Name",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "node-jose": "^2.2.0",
+    "sinon": "^19.0.2"
+  },
+  "devDependencies": {
+    "chai": "^5.1.1",
+    "mocha": "^10.7.3",
+    "nyc": "^17.1.0",
+    "supertest": "^7.0.0"
+  },
+  "nyc": {
+  "reporter": ["html", "text"],
+  "include": ["*.js"],
+  "exclude": ["test/**"]
+}
+}
