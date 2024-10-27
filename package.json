@@ -17,20 +17,30 @@
   "author": "Abiral",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.19.2",
+    "chai-http": "^5.1.1",
+    "express": "^4.21.1",
     "jsonwebtoken": "^9.0.2",
     "node-jose": "^2.2.0",
-    "sinon": "^19.0.2"
+    "sinon": "^19.0.2",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7"
   },
   "devDependencies": {
-    "chai": "^5.1.1",
+    "chai": "^5.1.2",
     "mocha": "^10.7.3",
     "nyc": "^17.1.0",
     "supertest": "^7.0.0"
   },
   "nyc": {
-  "reporter": ["html", "text"],
-  "include": ["*.js"],
-  "exclude": ["test/**"]
-}
+    "reporter": [
+      "html",
+      "text"
+    ],
+    "include": [
+      "*.js"
+    ],
+    "exclude": [
+      "test/**"
+    ]
+  }
 }

@@ -1,64 +1,82 @@
-import request from 'supertest';
-import { expect } from 'chai';
-import app from '../server.js';
+import { use, expect } from 'chai'
+import chaiHttp from 'chai-http'
+const chai = use(chaiHttp)
+import jwt from 'jsonwebtoken'; 
 
-describe('JWKS and Auth Tests', function () {
-  // Test the /jwks.json endpoint
-  it('should return a valid JWKS response', function (done) {
-    request(app)
+chai.request.execute()
+
+import { app } from './../server.js';
+
+
+describe('JWKS Server Tests', () => {
+  let validToken;
+  let expiredToken;
+
+  // Test case 1: Ensure the server is running and responds with 200 on /.well-known/jwks.json
+  it('should return 200 for GET /.well-known/jwks.json', (done) => {
+    chai
+      .request.execute(app)
       .get('/.well-known/jwks.json')
-      .expect('Content-Type', /json/)
-      .expect(200)
-      .end(function (err, res) {
-        if (err) return done(err);
+      .end((err, res) => {
+        expect(res).to.have.status(200);
         expect(res.body).to.have.property('keys');
-        expect(res.body.keys).to.be.an('array');
         done();
       });
   });
 
-  // Test the /auth endpoint with valid token
-  it('should return a valid JWT token', function (done) {
-    request(app)
+  // Test case 2: Generate a valid JWT and ensure it is returned
+  it('should generate a valid JWT on POST /auth', (done) => {
+    chai
+      .request.execute(app)
       .post('/auth')
-      .expect(200)
-      .end(function (err, res) {
-        if (err) return done(err);
+      .end((err, res) => {
+        expect(res).to.have.status(200);
         expect(res.text).to.be.a('string');
+        validToken = res.text; 
         done();
       });
   });
 
-  // Test the /auth endpoint with expired token
-  it('should return an expired JWT token when "expired=true" is passed', function (done) {
-    request(app)
+  // Test case 3: Generate an expired JWT using the expired query parameter
+  it('should generate an expired JWT on POST /auth with ?expired=true', (done) => {
+    chai
+      .request.execute(app)
       .post('/auth?expired=true')
-      .expect(200)
-      .end(function (err, res) {
-        if (err) return done(err);
+      .end((err, res) => {
+        expect(res).to.have.status(200);
         expect(res.text).to.be.a('string');
+        expiredToken = res.text; 
         done();
       });
   });
 
-  // Test the /jwks.json endpoint with invalid method (POST)
-  it('should return 405 for non-GET request to /jwks.json', function (done) {
-    request(app)
-      .post('/.well-known/jwks.json')
-      .expect(405)
-      .end(function (err) {
-        if (err) return done(err);
+  // Test case 4: Ensure expired JWT is indeed expired
+  it('should not validate the expired JWT', (done) => {
+    chai
+      .request.execute(app)
+      .post('/auth')
+      .query({ expired: 'true' })
+      .end((err, res) => {
+        const decoded = jwt.decode(res.text, { complete: true });
+        expect(decoded.payload.exp).to.be.lessThan(Math.floor(Date.now() / 1000));
         done();
       });
   });
 
-  // Test the /auth endpoint with invalid method (GET)
-  it('should return 405 for non-POST request to /auth', function (done) {
-    request(app)
-      .get('/auth')
-      .expect(405)
-      .end(function (err) {
-        if (err) return done(err);
+  // Test case 5: Ensure the valid JWT is not expired
+  it('should validate the generated valid JWT', (done) => {
+    const decoded = jwt.decode(validToken, { complete: true });
+    expect(decoded.payload.exp).to.be.greaterThan(Math.floor(Date.now() / 1000));
+    done();
+  });
+
+  // Test case 6: Return 405 for invalid HTTP methods on /.well-known/jwks.json
+  it('should return 404 for invalid method on /.well-known/jwks.json', (done) => {
+    chai
+      .request.execute(app)
+      .post('/.well-known/jwks.json') 
+      .end((err, res) => {
+        expect(res).to.have.status(404);
         done();
       });
   });

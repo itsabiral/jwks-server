@@ -11,12 +11,17 @@
 
 This application provides endpoints to manage JSON Web Keys (JWKS) and issue JSON Web Tokens (JWTs) for authentication. It is built with nodejs and express, it utilizes the `jsonwebtoken` and `node-jose` libraries for handling JWTs and key management.
 
+I am now using sqlite to store the tokens.
+
 ## Features
 
 - Generate and manage JWKS
 - Issue valid JWTs
 - Return expired JWTs based on request parameters
 - Handle HTTP methods with appropriate responses
+- Secure interaction with SQLite to store keys.
+- Mocha and Chai for unit testing and API validation.
+- Handle HTTP methods with appropriate status codes.
 
 ## Technologies Used
 
@@ -24,6 +29,7 @@ This application provides endpoints to manage JSON Web Keys (JWKS) and issue JSO
 - **Express**
 - **jsonwebtoken**
 - **node-jose**
+- **Sqlite**
 - **Mocha** and **Chai** (for testing)
 
 ## Running
